@@ -14,3 +14,5 @@ COPY --from=build /app/bin /app/bin
 ENV TELEGRAM_BOT_TOKEN='UR_TOKEN'
 
 CMD ["/app/bin"]
+
+EXPOSE 8080
