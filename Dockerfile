@@ -11,7 +11,7 @@ FROM docker.io/alpine:3.19
 WORKDIR /app
 COPY --from=build /app/bin /app/bin
 
-ENV TELEGRAM_BOT_TOKEN='UR_TOKEN'
+ENV TELEGRAM_BOT_TOKEN;
 
 CMD ["/app/bin"]
 
