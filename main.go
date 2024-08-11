@@ -7,12 +7,10 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 )
 
-const (
-	token    = "7422382792:AAH06eSEfSufB3DIIpWjFWDn8Ejt5YTpSoE"
-	myChatID = -1002241449422
-)
+const myChatID = -1002241449422
 
 type message struct {
 	Name  string `json:"name"`
@@ -23,12 +21,10 @@ var (
 	tg *tgbotapi.BotAPI
 )
 
-// handler функция для обработки HTTP-запросов с поддержкой CORS
 func handler(w http.ResponseWriter, r *http.Request) {
-	// Устанавливаем заголовки CORS
-	w.Header().Set("Access-Control-Allow-Origin", "*")                   // Разрешаем все источники (или укажите конкретный домен)
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS") // Разрешаем методы
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")       // Разрешаем заголовки
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	if r.Method == http.MethodOptions {
 		// Отвечаем на предварительные запросы OPTIONS
@@ -61,7 +57,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// Определите порт для сервера
+	token := os.Getenv("TELEGRAM_BOT_TOKEN")
+	if token == "" {
+		log.Fatal("Не указан токен Telegram бота")
+	}
+
 	port := ":8080"
 
 	tgInstance, err := tgbotapi.NewBotAPI(token)
@@ -69,10 +69,9 @@ func main() {
 		log.Fatalf("Ошибка при создании бота: %s", err)
 	}
 	tg = tgInstance
-	// Установите маршрут и обработчик
+
 	http.HandleFunc("/", handler)
 
-	// Запустите сервер
 	fmt.Printf("Сервер запущен на порту %s\n", port)
 	if err := http.ListenAndServe(port, nil); err != nil {
 		log.Fatalf("Ошибка при запуске сервера:", err)
