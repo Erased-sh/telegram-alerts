@@ -1,22 +1,16 @@
-# Этап 1: Сборка
-FROM golang:1.20-alpine AS builder
-
+FROM docker.io/golang:1.22-alpine as build
 WORKDIR /app
 
-COPY . .
+COPY ./go.mod ./go.sum /app/
+COPY . /app
 
-RUN go mod download
+RUN go build -v -o bin main.go
 
-RUN go build -o main .
+FROM docker.io/alpine:3.19
 
-FROM alpine:latest
+WORKDIR /app
+COPY --from=build /app/bin /app/bin
 
-RUN apk --no-cache add ca-certificates
+ENV TELEGRAM_BOT_TOKEN='UR_TOKEN'
 
-WORKDIR /root/
-
-COPY --from=builder /app/main .
-
-CMD ["./main"]
-
-EXPOSE 8080
+CMD ["/app/bin"]
