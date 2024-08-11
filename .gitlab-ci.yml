@@ -1,0 +1,21 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  IP: "${SERV_IP}"
+  PASSWORD: "${PASSWORD}"
+  APPIMAGE: "${CI_REGISTRY_IMAGE}"
+
+docker_build:
+  stage: build
+  image: golang:alpine
+  script:
+    - echo "data"
+
+prod_deploy:
+  stage: deploy
+  rules:
+    - when: manual
+  script:
+    - sshpass -p "$PASSWORD" ssh deploy@"$IP" 'bash -s' < ./server/deploy.sh
