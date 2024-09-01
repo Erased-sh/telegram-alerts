@@ -11,8 +11,8 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /app
 COPY --from=build /app/bin /app/bin
 
-COPY selfsigned.crt /etc/ssl/certs/selfsigned.crt
-COPY selfsigned.key /etc/ssl/private/selfsigned.key
+COPY ../selfsigned.crt /etc/ssl/certs/selfsigned.crt
+COPY ../selfsigned.key /etc/ssl/private/selfsigned.key
 
 ENV TELEGRAM_BOT_TOKEN;
 
