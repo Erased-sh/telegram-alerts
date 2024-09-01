@@ -62,6 +62,9 @@ func main() {
 		log.Fatal("Не указан токен Telegram бота")
 	}
 
+	certFile := "/etc/ssl/certs/selfsigned.crt"
+	keyFile := "/etc/ssl/private/selfsigned.key"
+
 	port := ":8080"
 
 	tgInstance, err := tgbotapi.NewBotAPI(token)
@@ -73,7 +76,7 @@ func main() {
 	http.HandleFunc("/", handler)
 
 	fmt.Printf("Сервер запущен на порту %s\n", port)
-	if err := http.ListenAndServe(port, nil); err != nil {
+	if err := http.ListenAndServeTLS(port, certFile, keyFile, nil); err != nil {
 		log.Fatalf("Ошибка при запуске сервера:", err)
 	}
 }
